@@ -4,12 +4,14 @@ import Carbon.HIToolbox
 final class HotKeyRecorder: NSButton {
     private var monitor: Any?
 
-    override init(frame: NSRect) {
-        super.init(frame: frame)
+    private var currentLabel: String { Settings.shared.hotKeyLabel }
+
+    init() {
+        super.init(frame: .zero)
         bezelStyle = .rounded
         target = self
         action = #selector(toggle)
-        title = Settings.shared.hotKeyLabel
+        title = currentLabel
     }
 
     required init?(coder: NSCoder) { fatalError() }
@@ -27,8 +29,7 @@ final class HotKeyRecorder: NSButton {
             if key.isEmpty || key.unicodeScalars.first.map({ $0.value < 32 || $0.value > 0xF000 }) == true {
                 key = "Key\(e.keyCode)"
             }
-            Settings.shared.setHotKey(code: UInt32(e.keyCode), mods: carbonModifiers(flags),
-                                      label: modifierLabel(flags) + key)
+            Settings.shared.setHotKey(code: UInt32(e.keyCode), mods: carbonModifiers(flags), label: modifierLabel(flags) + key)
             self.stop()
             return nil
         }
@@ -37,7 +38,7 @@ final class HotKeyRecorder: NSButton {
     private func stop() {
         if let m = monitor { NSEvent.removeMonitor(m) }
         monitor = nil
-        title = Settings.shared.hotKeyLabel
+        title = currentLabel
     }
 }
 
@@ -83,7 +84,7 @@ final class SettingsController: NSWindowController {
         languages.action = #selector(languageChanged)
 
         let grid = NSGridView(views: [
-            [NSTextField(labelWithString: tr("set.hotkey")), HotKeyRecorder(frame: .zero)],
+            [NSTextField(labelWithString: tr("set.hotkey")), HotKeyRecorder()],
             [NSTextField(labelWithString: tr("set.thumb")), corners],
             [NSTextField(labelWithString: tr("set.show")), seconds],
             [NSTextField(labelWithString: tr("set.lang")), languages],

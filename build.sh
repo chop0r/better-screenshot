@@ -19,8 +19,9 @@ cat > "$APP/Contents/Info.plist" <<PL
 <key>CFBundleShortVersionString</key><string>0.1</string>
 <key>CFBundleIconFile</key><string>AppIcon</string>
 <key>CFBundlePackageType</key><string>APPL</string>
-<key>LSMinimumSystemVersion</key><string>14.0</string>
+<key>LSMinimumSystemVersion</key><string>15.0</string>
 <key>LSUIElement</key><true/>
+<key>NSMicrophoneUsageDescription</key><string>Better Screenshot records your voice only when the microphone is switched on during a screen recording.</string>
 <key>NSScreenCaptureUsageDescription</key><string>Better Screenshot captures screenshots of your screen.</string>
 </dict></plist>
 PL

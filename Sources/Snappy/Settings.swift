@@ -28,6 +28,16 @@ final class Settings {
         NotificationCenter.default.post(name: Settings.changed, object: nil)
     }
 
+    var micOn: Bool {
+        get { d.bool(forKey: "recMic") }
+        set { d.set(newValue, forKey: "recMic") }
+    }
+
+    var systemAudioOn: Bool {
+        get { d.object(forKey: "recSystem") == nil ? true : d.bool(forKey: "recSystem") }
+        set { d.set(newValue, forKey: "recSystem") }
+    }
+
     var corner: Corner {
         get { Corner(rawValue: d.string(forKey: "corner") ?? "") ?? .bottomLeft }
         set { d.set(newValue.rawValue, forKey: "corner") }

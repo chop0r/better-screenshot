@@ -5,7 +5,7 @@ final class ThumbnailController {
     private var timer: Timer?
     private var hovering = false
 
-    func show(image: CGImage, screen: NSScreen, corner: Corner, seconds: Double, onOpen: @escaping () -> Void) {
+    func show(image: CGImage, screen: NSScreen, corner: Corner, seconds: Double, caption: String? = nil, onOpen: @escaping () -> Void) {
         dismiss(animated: false)
         let scale = screen.backingScaleFactor
         let pw = CGFloat(image.width) / scale, ph = CGFloat(image.height) / scale
@@ -30,7 +30,7 @@ final class ThumbnailController {
         p.hidesOnDeactivate = false
         p.isReleasedWhenClosed = false
         p.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary]
-        let view = ThumbnailView(frame: NSRect(origin: .zero, size: size), image: image)
+        let view = ThumbnailView(frame: NSRect(origin: .zero, size: size), image: image, caption: caption ?? tr("thumb.copied"))
         view.onClick = { [weak self] in
             self?.dismiss(animated: false)
             onOpen()
@@ -78,10 +78,13 @@ final class ThumbnailController {
 final class ThumbnailView: NSView {
     var onClick: (() -> Void)?
     var onHover: ((Bool) -> Void)?
-    private let label = NSTextField(labelWithString: tr("thumb.copied"))
+    private let label = NSTextField(labelWithString: "")
+    private let caption: String
 
-    init(frame: NSRect, image: CGImage) {
+    init(frame: NSRect, image: CGImage, caption: String) {
+        self.caption = caption
         super.init(frame: frame)
+        label.stringValue = caption
         wantsLayer = true
         layer?.contents = image
         layer?.contentsGravity = .resizeAspectFill
@@ -115,7 +118,7 @@ final class ThumbnailView: NSView {
     }
 
     override func mouseExited(with event: NSEvent) {
-        label.stringValue = tr("thumb.copied")
+        label.stringValue = caption
         onHover?(false)
     }
 

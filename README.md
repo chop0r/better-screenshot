@@ -20,17 +20,18 @@ Convenient screenshots for macOS, the way Windows does it: pick an area / window
 - **Shape straightening**: a hand-drawn circle, rectangle, line or arrow becomes a clean one. ⌘Z brings back exactly what you drew.
 - Hold **Shift** while drawing for straight lines (15° steps) and squares / circles.
 - **Copy** (to the clipboard, closes the editor) and **Save…** (PNG) buttons.
+- **Screen recording**: switch **Screenshot | Record** in the same picker (or press **R**), choose the area, and recording starts. A floating panel shows the timer and lets you toggle the **microphone** and **system sound** at any time; the same hotkey stops the recording. The MP4 is saved to `~/Movies/Better Screenshot/` and copied to the clipboard; click the thumbnail to preview it, reveal it in Finder or export a **GIF**.
 - **Launch at login** (on by default after the first run, can be turned off in Settings).
 - **Languages**: English (default), Русский, Українська, Deutsch, Français, Español, 简体中文, 日本語 — pick one in Settings. Translations were made with AI; corrections are welcome.
 
 ## Install
 
-1. Download `Better-Screenshot-*.dmg` from [Releases](../../releases) and drag the app into Applications. Requires macOS 14 or newer; runs on Apple Silicon and Intel.
+1. Download `Better-Screenshot-*.dmg` from [Releases](../../releases) and drag the app into Applications. Requires macOS 15 or newer; runs on Apple Silicon and Intel.
 2. The app is not signed with an Apple Developer certificate, so on first launch: right-click → **Open**. If macOS says the app is damaged:
    ```bash
    xattr -dr com.apple.quarantine "/Applications/Better Screenshot.app"
    ```
-3. Allow it in System Settings → Privacy & Security → **Screen Recording**, then restart the app.
+3. Allow it in System Settings → Privacy & Security → **Screen Recording** (and **Microphone** if you record your voice), then restart the app.
 
 The app lives in the menu bar (camera icon) and has no Dock icon.
 
@@ -76,17 +77,18 @@ This project was created with the help of an AI assistant (Claude by Anthropic) 
 - **Выпрямление фигур**: нарисованные от руки круг, прямоугольник, линия и стрелка становятся ровными. ⌘Z возвращает штрих как был нарисован.
 - **Shift** при рисовании — ровные линии (шаг 15°), квадраты и круги.
 - Кнопки **«Копировать»** (в буфер, редактор закрывается) и **«Сохранить…»** (PNG).
+- **Запись экрана**: в том же выборе переключатель **Скриншот | Запись** (или клавиша **R**), выбираете область — и запись идёт. Плавающая панель показывает таймер и позволяет в любой момент включать и выключать **микрофон** и **звук системы**; то же сочетание останавливает запись. MP4 сохраняется в `~/Movies/Better Screenshot/` и копируется в буфер; клик по миниатюре открывает просмотр, показ в Finder и экспорт в **GIF**.
 - **Автозапуск при входе** (после первого запуска включён, выключается в настройках).
 - **Языки**: English (по умолчанию), Русский, Українська, Deutsch, Français, Español, 简体中文, 日本語 — выбираются в настройках. Переводы сделаны нейросетью, исправления приветствуются.
 
 ## Установка
 
-1. Скачайте `Better-Screenshot-*.dmg` на странице [Releases](../../releases) и перетащите приложение в «Программы». Нужна macOS 14 или новее; работает на Apple Silicon и Intel.
+1. Скачайте `Better-Screenshot-*.dmg` на странице [Releases](../../releases) и перетащите приложение в «Программы». Нужна macOS 15 или новее; работает на Apple Silicon и Intel.
 2. Приложение не подписано сертификатом Apple Developer, поэтому при первом запуске: правый клик → **Открыть**. Если macOS пишет, что приложение повреждено:
    ```bash
    xattr -dr com.apple.quarantine "/Applications/Better Screenshot.app"
    ```
-3. Разрешите доступ в Системные настройки → Конфиденциальность и безопасность → **Запись экрана** и перезапустите приложение.
+3. Разрешите доступ в Системные настройки → Конфиденциальность и безопасность → **Запись экрана** (и **Микрофон**, если пишете голос) и перезапустите приложение.
 
 Приложение живёт в строке меню (иконка камеры), значка в Dock нет.
 

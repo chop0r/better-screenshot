@@ -9,13 +9,24 @@ final class OverlayWindow: NSWindow {
     override var canBecomeMain: Bool { true }
 }
 
+enum CapturePurpose {
+    case screenshot, record
+}
+
 final class CaptureSession {
     let captures: [Capture]
     let windowFrames: [CGRect]
+    /// Switchable in the toolbar (or with S / R) while the picker is open.
+    var purpose: CapturePurpose {
+        didSet { views.forEach { $0.purposeChanged() } }
+    }
     var onFinish: (((CGImage, NSScreen)?) -> Void)?
+    /// Record mode: the chosen region (view coordinates of that screen, bottom-left origin) or nil when cancelled.
+    var onRegion: (((NSScreen, CGRect)?) -> Void)?
     private var windows: [OverlayWindow] = []
     private var views: [OverlayView] = []
     weak var segmented: NSSegmentedControl?
+    weak var purposeSegmented: NSSegmentedControl?
 
     var mode: CaptureMode = .area {
         didSet {
@@ -24,9 +35,10 @@ final class CaptureSession {
         }
     }
 
-    init(captures: [Capture], windowFrames: [CGRect]) {
+    init(captures: [Capture], windowFrames: [CGRect], purpose: CapturePurpose = .screenshot) {
         self.captures = captures
         self.windowFrames = windowFrames
+        self.purpose = purpose
     }
 
     func start() {
@@ -63,6 +75,11 @@ final class CaptureSession {
 
     func finish(rect: CGRect, in view: OverlayView) {
         let cap = view.capture
+        if purpose == .record {
+            close()
+            onRegion?((cap.screen, rect))
+            return
+        }
         let scale = CGFloat(cap.image.width) / cap.screen.frame.width
         let px = CGRect(x: rect.minX * scale,
                         y: (cap.screen.frame.height - rect.maxY) * scale,
@@ -76,6 +93,7 @@ final class CaptureSession {
     func cancel() {
         close()
         onFinish?(nil)
+        onRegion?(nil)
     }
 }
 
@@ -107,7 +125,22 @@ final class OverlayView: NSView {
         let hint = NSTextField(labelWithString: tr("esc.cancel"))
         hint.textColor = .secondaryLabelColor
         hint.font = .systemFont(ofSize: 11)
-        let stack = NSStackView(views: [seg, hint])
+        let purposeSeg = NSSegmentedControl(labels: [tr("purpose.shot"), tr("purpose.rec")], trackingMode: .selectOne,
+                                            target: self, action: #selector(purposeClicked(_:)))
+        purposeSeg.selectedSegment = session.purpose == .record ? 1 : 0
+        purposeSeg.segmentStyle = .rounded
+        session.purposeSegmented = purposeSeg
+        do {
+            let mic = ToggleIconButton(on: "mic.fill", off: "mic.slash.fill", tip: tr("rec.mic"), isOn: Settings.shared.micOn)
+            mic.onToggle = { Settings.shared.micOn = $0 }
+            let sys = ToggleIconButton(on: "speaker.wave.2.fill", off: "speaker.slash.fill", tip: tr("rec.sys"), isOn: Settings.shared.systemAudioOn)
+            sys.onToggle = { Settings.shared.systemAudioOn = $0 }
+            micButton = mic
+            sysButton = sys
+        }
+        micButton?.isHidden = session.purpose != .record
+        sysButton?.isHidden = session.purpose != .record
+        let stack = NSStackView(views: [purposeSeg, seg] + [micButton, sysButton].compactMap { $0 } + [hint])
         stack.orientation = .horizontal
         stack.spacing = 14
         stack.edgeInsets = NSEdgeInsets(top: 10, left: 16, bottom: 10, right: 16)
@@ -132,6 +165,20 @@ final class OverlayView: NSView {
             box.topAnchor.constraint(equalTo: topAnchor, constant: 70),
         ])
         session.segmented = seg
+    }
+
+    private var micButton: NSView?
+    private var sysButton: NSView?
+
+    @objc private func purposeClicked(_ sender: NSSegmentedControl) {
+        session.purpose = sender.selectedSegment == 1 ? .record : .screenshot
+    }
+
+    func purposeChanged() {
+        session.purposeSegmented?.selectedSegment = session.purpose == .record ? 1 : 0
+        micButton?.isHidden = session.purpose != .record
+        sysButton?.isHidden = session.purpose != .record
+        needsDisplay = true
     }
 
     @objc private func modeChanged(_ sender: NSSegmentedControl) {
@@ -211,6 +258,8 @@ final class OverlayView: NSView {
     override func keyDown(with event: NSEvent) {
         switch event.keyCode {
         case 53: session.cancel()
+        case 1: session.purpose = .screenshot
+        case 15: session.purpose = .record
         case 18: session.mode = .area
         case 19: session.mode = .window
         case 20: session.mode = .screen
@@ -229,7 +278,7 @@ final class OverlayView: NSView {
         }
         dim.fill()
         guard let r = highlight else { return }
-        NSColor.controlAccentColor.setStroke()
+        (session.purpose == .record ? NSColor.systemRed : NSColor.controlAccentColor).setStroke()
         let border = NSBezierPath(rect: r.insetBy(dx: 0.5, dy: 0.5))
         border.lineWidth = 2
         border.stroke()
