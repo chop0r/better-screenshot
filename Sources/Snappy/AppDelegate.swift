@@ -56,6 +56,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let set = NSMenuItem(title: tr("menu.settings"), action: #selector(openSettings), keyEquivalent: ",")
         set.target = self
         menu.addItem(set)
+        let about = NSMenuItem(title: tr("menu.about"), action: #selector(showAbout), keyEquivalent: "")
+        about.target = self
+        menu.addItem(about)
         menu.addItem(.separator())
         menu.addItem(NSMenuItem(title: tr("menu.quit"), action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
         statusItem?.menu = menu
@@ -84,6 +87,40 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                        NSMenuItem(title: tr("menu.paste"), action: #selector(NSText.paste(_:)), keyEquivalent: "v"),
                        NSMenuItem(title: tr("menu.selectall"), action: #selector(NSText.selectAll(_:)), keyEquivalent: "a")])
         NSApp.mainMenu = main
+    }
+
+    @objc func showAbout() {
+        let credits = NSMutableAttributedString()
+        let body: [NSAttributedString.Key: Any] = [.font: NSFont.systemFont(ofSize: 11), .foregroundColor: NSColor.labelColor]
+        func text(_ s: String) { credits.append(NSAttributedString(string: s, attributes: body)) }
+        func link(_ s: String, _ url: String) {
+            var a = body
+            a[.link] = URL(string: url)
+            credits.append(NSAttributedString(string: s, attributes: a))
+        }
+        text(tr("about.desc") + "\n\n")
+        link(tr("about.source"), "https://github.com/chop0r/better-screenshot")
+        text("\n")
+        link(tr("about.author"), "https://github.com/chop0r")
+        text("\n")
+        link(tr("about.clip"), "https://github.com/chop0r/better-clipboard")
+        text("\n")
+        link(tr("about.support"), "https://www.donationalerts.com/r/chopor")
+        text("\n\n" + tr("about.ai"))
+        let p = NSMutableParagraphStyle()
+        p.alignment = .center
+        credits.addAttribute(.paragraphStyle, value: p, range: NSRange(location: 0, length: credits.length))
+        NSApp.activate(ignoringOtherApps: true)
+        NSApp.orderFrontStandardAboutPanel(options: [.applicationName: "Better Screenshot", .credits: credits])
+    }
+
+    /// Images handed over by other apps (e.g. Better Clipboard) open straight in the editor.
+    func application(_ application: NSApplication, open urls: [URL]) {
+        for url in urls {
+            guard let img = NSImage(contentsOf: url),
+                  let cg = img.cgImage(forProposedRect: nil, context: nil, hints: nil) else { continue }
+            openEditor(cg, scale: NSScreen.main?.backingScaleFactor ?? 2)
+        }
     }
 
     @objc func openSettings() {

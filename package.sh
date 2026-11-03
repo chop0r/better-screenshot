@@ -25,6 +25,10 @@ cat > "$APP/Contents/Info.plist" <<PL
 <key>LSUIElement</key><true/>
 <key>NSMicrophoneUsageDescription</key><string>Better Screenshot records your voice only when the microphone is switched on during a screen recording.</string>
 <key>NSScreenCaptureUsageDescription</key><string>Better Screenshot captures screenshots of your screen.</string>
+<key>CFBundleDocumentTypes</key><array><dict>
+<key>CFBundleTypeName</key><string>Image</string><key>CFBundleTypeRole</key><string>Editor</string><key>LSHandlerRank</key><string>Alternate</string>
+<key>LSItemContentTypes</key><array><string>public.png</string><string>public.jpeg</string><string>public.tiff</string></array>
+</dict></array>
 </dict></plist>
 PL
 codesign --force --sign - "$APP"
