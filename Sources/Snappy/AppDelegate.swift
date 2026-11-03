@@ -9,6 +9,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var captureItem: NSMenuItem?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        Settings.shared.applyLoginDefaultOnce()
         setupMainMenu()
         setupStatusItem()
         HotKey.shared.onPress = { [weak self] in self?.startCapture() }

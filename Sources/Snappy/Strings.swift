@@ -54,6 +54,7 @@ enum Strings {
         "set.show": ["Show for:", "Показывать:", "Показувати:", "Anzeigedauer:", "Afficher pendant :", "Mostrar durante:", "显示时长：", "表示時間："],
         "set.lang": ["Language:", "Язык:", "Мова:", "Sprache:", "Langue :", "Idioma:", "语言：", "言語："],
         "set.press": ["Press shortcut…", "Нажмите сочетание…", "Натисніть комбінацію…", "Kürzel drücken …", "Appuyez sur le raccourci…", "Pulsa el atajo…", "请按下快捷键…", "ショートカットを押す…"],
+        "set.login": ["Launch at login", "Запускать при входе", "Запускати під час входу", "Beim Anmelden starten", "Ouvrir à l'ouverture de session", "Abrir al iniciar sesión", "登录时启动", "ログイン時に起動"],
         "sec": ["%d s", "%d сек", "%d с", "%d Sek.", "%d s", "%d s", "%d 秒", "%d 秒"],
         "menu.capture": ["Take screenshot", "Сделать снимок", "Зробити знімок", "Screenshot aufnehmen", "Prendre une capture", "Hacer captura", "截图", "スクリーンショットを撮る"],
         "menu.settings": ["Settings…", "Настройки…", "Налаштування…", "Einstellungen …", "Réglages…", "Ajustes…", "设置…", "設定…"],

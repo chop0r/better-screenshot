@@ -1,5 +1,6 @@
 import AppKit
 import Carbon.HIToolbox
+import ServiceManagement
 
 enum Corner: String, CaseIterable {
     case bottomLeft, bottomRight, topLeft, topRight
@@ -39,6 +40,25 @@ final class Settings {
             d.set(newValue, forKey: "language")
             NotificationCenter.default.post(name: Settings.changed, object: nil)
         }
+    }
+
+    /// Start at login via the system login-items list (visible in System Settings → General → Login Items).
+    var launchAtLogin: Bool {
+        get { SMAppService.mainApp.status == .enabled }
+        set {
+            do {
+                if newValue { try SMAppService.mainApp.register() } else { try SMAppService.mainApp.unregister() }
+            } catch {
+                NSLog("Login item change failed: \(error)")
+            }
+        }
+    }
+
+    /// Turns launch-at-login on once, on the very first run; afterwards the user's choice wins.
+    func applyLoginDefaultOnce() {
+        guard d.object(forKey: "loginDefaultApplied") == nil else { return }
+        d.set(true, forKey: "loginDefaultApplied")
+        launchAtLogin = true
     }
 
     var thumbnailSeconds: Double {

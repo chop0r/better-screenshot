@@ -48,7 +48,7 @@ final class SettingsController: NSWindowController {
     private var languages = NSPopUpButton()
 
     init() {
-        let w = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 440, height: 210),
+        let w = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 440, height: 250),
                          styleMask: [.titled, .closable], backing: .buffered, defer: false)
         w.isReleasedWhenClosed = false
         super.init(window: w)
@@ -64,6 +64,8 @@ final class SettingsController: NSWindowController {
         corners = NSPopUpButton()
         seconds = NSPopUpButton()
         languages = NSPopUpButton()
+        let loginBox = NSButton(checkboxWithTitle: tr("set.login"), target: self, action: #selector(loginChanged(_:)))
+        loginBox.state = Settings.shared.launchAtLogin ? .on : .off
 
         corners.addItems(withTitles: Corner.allCases.map(\.title))
         corners.selectItem(at: Corner.allCases.firstIndex(of: Settings.shared.corner) ?? 0)
@@ -85,6 +87,7 @@ final class SettingsController: NSWindowController {
             [NSTextField(labelWithString: tr("set.thumb")), corners],
             [NSTextField(labelWithString: tr("set.show")), seconds],
             [NSTextField(labelWithString: tr("set.lang")), languages],
+            [NSGridCell.emptyContentView, loginBox],
         ])
         grid.rowSpacing = 12
         grid.columnSpacing = 12
@@ -97,6 +100,11 @@ final class SettingsController: NSWindowController {
             grid.centerYAnchor.constraint(equalTo: content.centerYAnchor),
         ])
         w.contentView = content
+    }
+
+    @objc private func loginChanged(_ sender: NSButton) {
+        Settings.shared.launchAtLogin = sender.state == .on
+        sender.state = Settings.shared.launchAtLogin ? .on : .off
     }
 
     @objc private func cornerChanged() {
