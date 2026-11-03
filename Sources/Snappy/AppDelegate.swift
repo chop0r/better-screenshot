@@ -56,6 +56,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let set = NSMenuItem(title: tr("menu.settings"), action: #selector(openSettings), keyEquivalent: ",")
         set.target = self
         menu.addItem(set)
+        let editClip = NSMenuItem(title: tr("menu.editclip"), action: #selector(editClipboardImage), keyEquivalent: "")
+        editClip.target = self
+        menu.addItem(editClip)
         let about = NSMenuItem(title: tr("menu.about"), action: #selector(showAbout), keyEquivalent: "")
         about.target = self
         menu.addItem(about)
@@ -114,6 +117,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.orderFrontStandardAboutPanel(options: [.applicationName: "Better Screenshot", .credits: credits])
     }
 
+    /// Opens the image currently on the clipboard in the editor (pairs with Better Clipboard's history).
+    @objc func editClipboardImage() {
+        guard let img = NSImage(pasteboard: .general),
+              let cg = img.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
+            alert(tr("alert.noclip"), "")
+            return
+        }
+        openEditor(cg, scale: NSScreen.main?.backingScaleFactor ?? 2)
+    }
+
     /// Images handed over by other apps (e.g. Better Clipboard) open straight in the editor.
     func application(_ application: NSApplication, open urls: [URL]) {
         for url in urls {
@@ -121,6 +134,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                   let cg = img.cgImage(forProposedRect: nil, context: nil, hints: nil) else { continue }
             openEditor(cg, scale: NSScreen.main?.backingScaleFactor ?? 2)
         }
+        NSApp.activate(ignoringOtherApps: true)
+        editors.last?.window?.orderFrontRegardless()
     }
 
     @objc func openSettings() {

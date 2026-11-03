@@ -21,7 +21,7 @@ Convenient screenshots for macOS, the way Windows does it: pick an area / window
 - Hold **Shift** while drawing for straight lines (15° steps) and squares / circles.
 - **Copy** (to the clipboard, closes the editor) and **Save…** (PNG) buttons.
 - **Screen recording**: switch **Screenshot | Record** in the same picker (or press **R**), choose the area, and recording starts. A floating panel shows the timer and lets you toggle the **microphone** and **system sound** at any time; the same hotkey stops the recording. The MP4 is saved to `~/Movies/Better Screenshot/` and copied to the clipboard; click the thumbnail to preview it, reveal it in Finder or export a **GIF**.
-- **Opens images from [Better Clipboard](https://github.com/chop0r/better-clipboard)** (free clipboard history): edit any old screenshot from your history in this editor. Also available via *Open With* for PNG / JPEG / TIFF files.
+- **Opens images from [Better Clipboard](https://github.com/chop0r/better-clipboard)** (free clipboard history): edit any old screenshot from your history in this editor. Also available via *Open With* for PNG / JPEG / TIFF files, and from the menu: **Edit image from clipboard**.
 - **About** window in the menu with links to this repository and the author.
 - **Launch at login** (on by default after the first run, can be turned off in Settings).
 - **Languages**: English (default), Русский, Українська, Deutsch, Français, Español, 简体中文, 日本語 — pick one in Settings. Translations were made with AI; corrections are welcome.
@@ -80,7 +80,7 @@ This project was created with the help of an AI assistant (Claude by Anthropic) 
 - **Shift** при рисовании — ровные линии (шаг 15°), квадраты и круги.
 - Кнопки **«Копировать»** (в буфер, редактор закрывается) и **«Сохранить…»** (PNG).
 - **Запись экрана**: в том же выборе переключатель **Скриншот | Запись** (или клавиша **R**), выбираете область — и запись идёт. Плавающая панель показывает таймер и позволяет в любой момент включать и выключать **микрофон** и **звук системы**; то же сочетание останавливает запись. MP4 сохраняется в `~/Movies/Better Screenshot/` и копируется в буфер; клик по миниатюре открывает просмотр, показ в Finder и экспорт в **GIF**.
-- **Открывает изображения из [Better Clipboard](https://github.com/chop0r/better-clipboard)** (бесплатная история буфера): любой старый скриншот из истории можно править в этом редакторе. Также доступно через «Открыть в программе» для файлов PNG / JPEG / TIFF.
+- **Открывает изображения из [Better Clipboard](https://github.com/chop0r/better-clipboard)** (бесплатная история буфера): любой старый скриншот из истории можно править в этом редакторе. Также доступно через «Открыть в программе» для файлов PNG / JPEG / TIFF и из меню: **«Править изображение из буфера»**.
 - Окно **«О программе»** в меню со ссылками на репозиторий и автора.
 - **Автозапуск при входе** (после первого запуска включён, выключается в настройках).
 - **Языки**: English (по умолчанию), Русский, Українська, Deutsch, Français, Español, 简体中文, 日本語 — выбираются в настройках. Переводы сделаны нейросетью, исправления приветствуются.
