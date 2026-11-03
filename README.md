@@ -4,6 +4,13 @@ Convenient screenshots for macOS, the way Windows does it: pick an area / window
 
 **English** | [Русский](#русская-версия)
 
+![Editor](docs/screenshots/editor.webp)
+
+| | |
+|---|---|
+| ![Capture: area / window / screen](docs/screenshots/capture.webp) | ![Thumbnail in the corner](docs/screenshots/thumbnail.webp) |
+| ![Settings](docs/screenshots/settings.png) | |
+
 ## Features
 
 - Global hotkey (default **⇧⌘S**, configurable in Settings).
@@ -54,6 +61,8 @@ This project was created with the help of an AI assistant (Claude by Anthropic) 
 # Русская версия
 
 [↑ English](#better-screenshot)
+
+![Редактор](docs/screenshots/editor.webp)
 
 Удобные скриншоты для macOS, как в Windows: выбор области / окна / экрана, миниатюра в углу и простой редактор. Бесплатно и с открытым кодом.
 
