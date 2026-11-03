@@ -19,7 +19,7 @@ cat > "$APP/Contents/Info.plist" <<PL
 <key>CFBundlePackageType</key><string>APPL</string>
 <key>LSMinimumSystemVersion</key><string>14.0</string>
 <key>LSUIElement</key><true/>
-<key>NSScreenCaptureUsageDescription</key><string>Better Screenshot делает снимки экрана.</string>
+<key>NSScreenCaptureUsageDescription</key><string>Better Screenshot captures screenshots of your screen.</string>
 </dict></plist>
 PL
 codesign --force --sign - "$APP"

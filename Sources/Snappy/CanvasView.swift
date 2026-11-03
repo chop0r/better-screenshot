@@ -19,21 +19,7 @@ enum Tool: Int, CaseIterable {
         }
     }
 
-    var title: String {
-        switch self {
-        case .select: return "Выбрать / переместить"
-        case .pen: return "Карандаш (с распознаванием фигур)"
-        case .highlighter: return "Маркер"
-        case .line: return "Линия"
-        case .arrow: return "Стрелка"
-        case .rect: return "Прямоугольник"
-        case .ellipse: return "Овал"
-        case .text: return "Текст"
-        case .number: return "Нумерация"
-        case .mosaic: return "Мозаика (скрыть данные)"
-        case .crop: return "Обрезка"
-        }
-    }
+    var title: String { tr("tool.\(self)") }
 }
 
 final class CanvasView: NSView, NSTextFieldDelegate {

@@ -4,14 +4,7 @@ import Carbon.HIToolbox
 enum Corner: String, CaseIterable {
     case bottomLeft, bottomRight, topLeft, topRight
 
-    var title: String {
-        switch self {
-        case .bottomLeft: return "Снизу слева"
-        case .bottomRight: return "Снизу справа"
-        case .topLeft: return "Сверху слева"
-        case .topRight: return "Сверху справа"
-        }
-    }
+    var title: String { tr("corner.\(rawValue)") }
 }
 
 final class Settings {
@@ -37,6 +30,15 @@ final class Settings {
     var corner: Corner {
         get { Corner(rawValue: d.string(forKey: "corner") ?? "") ?? .bottomLeft }
         set { d.set(newValue.rawValue, forKey: "corner") }
+    }
+
+    /// UI language code (see `Lang.codes`); English unless the user picks another one.
+    var language: String {
+        get { d.string(forKey: "language") ?? "en" }
+        set {
+            d.set(newValue, forKey: "language")
+            NotificationCenter.default.post(name: Settings.changed, object: nil)
+        }
     }
 
     var thumbnailSeconds: Double {

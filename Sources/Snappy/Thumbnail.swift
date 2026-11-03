@@ -78,7 +78,7 @@ final class ThumbnailController {
 final class ThumbnailView: NSView {
     var onClick: (() -> Void)?
     var onHover: ((Bool) -> Void)?
-    private let label = NSTextField(labelWithString: "✓ Скопировано")
+    private let label = NSTextField(labelWithString: tr("thumb.copied"))
 
     init(frame: NSRect, image: CGImage) {
         super.init(frame: frame)
@@ -110,12 +110,12 @@ final class ThumbnailView: NSView {
     }
 
     override func mouseEntered(with event: NSEvent) {
-        label.stringValue = "Нажмите для редактирования"
+        label.stringValue = tr("thumb.edit")
         onHover?(true)
     }
 
     override func mouseExited(with event: NSEvent) {
-        label.stringValue = "✓ Скопировано"
+        label.stringValue = tr("thumb.copied")
         onHover?(false)
     }
 

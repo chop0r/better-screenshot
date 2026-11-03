@@ -13,6 +13,7 @@ Convenient screenshots for macOS, the way Windows does it: pick an area / window
 - **Shape straightening**: a hand-drawn circle, rectangle, line or arrow becomes a clean one. ⌘Z brings back exactly what you drew.
 - Hold **Shift** while drawing for straight lines (15° steps) and squares / circles.
 - **Copy** (to the clipboard, closes the editor) and **Save…** (PNG) buttons.
+- **Languages**: English (default), Русский, Українська, Deutsch, Français, Español, 简体中文, 日本語 — pick one in Settings. Translations were made with AI; corrections are welcome.
 
 ## Install
 
@@ -65,6 +66,7 @@ This project was created with the help of an AI assistant (Claude by Anthropic) 
 - **Выпрямление фигур**: нарисованные от руки круг, прямоугольник, линия и стрелка становятся ровными. ⌘Z возвращает штрих как был нарисован.
 - **Shift** при рисовании — ровные линии (шаг 15°), квадраты и круги.
 - Кнопки **«Копировать»** (в буфер, редактор закрывается) и **«Сохранить…»** (PNG).
+- **Языки**: English (по умолчанию), Русский, Українська, Deutsch, Français, Español, 简体中文, 日本語 — выбираются в настройках. Переводы сделаны нейросетью, исправления приветствуются.
 
 ## Установка
 

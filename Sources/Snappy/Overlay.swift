@@ -100,11 +100,11 @@ final class OverlayView: NSView {
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
 
     func installToolbar() {
-        let seg = NSSegmentedControl(labels: ["Область", "Окно", "Экран"], trackingMode: .selectOne,
+        let seg = NSSegmentedControl(labels: [tr("mode.area"), tr("mode.window"), tr("mode.screen")], trackingMode: .selectOne,
                                      target: self, action: #selector(modeChanged(_:)))
         seg.selectedSegment = session.mode.rawValue
         seg.segmentStyle = .rounded
-        let hint = NSTextField(labelWithString: "Esc — отмена")
+        let hint = NSTextField(labelWithString: tr("esc.cancel"))
         hint.textColor = .secondaryLabelColor
         hint.font = .systemFont(ofSize: 11)
         let stack = NSStackView(views: [seg, hint])

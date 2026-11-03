@@ -16,7 +16,7 @@ final class HotKeyRecorder: NSButton {
 
     @objc private func toggle() {
         if monitor != nil { stop(); return }
-        title = "Нажмите сочетание…"
+        title = tr("set.press")
         monitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] e in
             guard let self = self else { return e }
             if e.keyCode == 53 { self.stop(); return nil }
@@ -42,44 +42,62 @@ final class HotKeyRecorder: NSButton {
 }
 
 final class SettingsController: NSWindowController {
-    private let corners = NSPopUpButton()
-    private let seconds = NSPopUpButton()
     private let durations: [Double] = [3, 6, 10, 15]
+    private var corners = NSPopUpButton()
+    private var seconds = NSPopUpButton()
+    private var languages = NSPopUpButton()
 
     init() {
-        let w = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 420, height: 170),
+        let w = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 440, height: 210),
                          styleMask: [.titled, .closable], backing: .buffered, defer: false)
-        w.title = "Настройки Better Screenshot"
         w.isReleasedWhenClosed = false
         super.init(window: w)
+        build()
+    }
+
+    required init?(coder: NSCoder) { fatalError() }
+
+    /// Builds the form; called again after the language changes so every label follows it.
+    private func build() {
+        guard let w = window else { return }
+        w.title = tr("set.title")
+        corners = NSPopUpButton()
+        seconds = NSPopUpButton()
+        languages = NSPopUpButton()
 
         corners.addItems(withTitles: Corner.allCases.map(\.title))
         corners.selectItem(at: Corner.allCases.firstIndex(of: Settings.shared.corner) ?? 0)
         corners.target = self
         corners.action = #selector(cornerChanged)
 
-        seconds.addItems(withTitles: durations.map { "\(Int($0)) сек" })
+        seconds.addItems(withTitles: durations.map { String(format: tr("sec"), Int($0)) })
         seconds.selectItem(at: durations.firstIndex(of: Settings.shared.thumbnailSeconds) ?? 1)
         seconds.target = self
         seconds.action = #selector(secondsChanged)
 
+        languages.addItems(withTitles: Lang.names)
+        languages.selectItem(at: Lang.codes.firstIndex(of: Settings.shared.language) ?? 0)
+        languages.target = self
+        languages.action = #selector(languageChanged)
+
         let grid = NSGridView(views: [
-            [NSTextField(labelWithString: "Горячая клавиша:"), HotKeyRecorder(frame: .zero)],
-            [NSTextField(labelWithString: "Миниатюра:"), corners],
-            [NSTextField(labelWithString: "Показывать:"), seconds],
+            [NSTextField(labelWithString: tr("set.hotkey")), HotKeyRecorder(frame: .zero)],
+            [NSTextField(labelWithString: tr("set.thumb")), corners],
+            [NSTextField(labelWithString: tr("set.show")), seconds],
+            [NSTextField(labelWithString: tr("set.lang")), languages],
         ])
         grid.rowSpacing = 12
         grid.columnSpacing = 12
         grid.column(at: 0).xPlacement = .trailing
         grid.translatesAutoresizingMaskIntoConstraints = false
-        w.contentView?.addSubview(grid)
+        let content = NSView()
+        content.addSubview(grid)
         NSLayoutConstraint.activate([
-            grid.centerXAnchor.constraint(equalTo: w.contentView!.centerXAnchor),
-            grid.centerYAnchor.constraint(equalTo: w.contentView!.centerYAnchor),
+            grid.centerXAnchor.constraint(equalTo: content.centerXAnchor),
+            grid.centerYAnchor.constraint(equalTo: content.centerYAnchor),
         ])
+        w.contentView = content
     }
-
-    required init?(coder: NSCoder) { fatalError() }
 
     @objc private func cornerChanged() {
         Settings.shared.corner = Corner.allCases[corners.indexOfSelectedItem]
@@ -87,6 +105,11 @@ final class SettingsController: NSWindowController {
 
     @objc private func secondsChanged() {
         Settings.shared.thumbnailSeconds = durations[seconds.indexOfSelectedItem]
+    }
+
+    @objc private func languageChanged() {
+        Settings.shared.language = Lang.codes[languages.indexOfSelectedItem]
+        build()
     }
 
     func show() {

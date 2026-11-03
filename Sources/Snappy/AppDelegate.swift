@@ -14,6 +14,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         HotKey.shared.onPress = { [weak self] in self?.startCapture() }
         registerHotKey()
         NotificationCenter.default.addObserver(forName: Settings.changed, object: nil, queue: .main) { [weak self] _ in
+            self?.setupMainMenu()
+            self?.rebuildStatusMenu()
             self?.registerHotKey()
         }
         if !CGPreflightScreenCaptureAccess() { CGRequestScreenCaptureAccess() }
@@ -21,24 +23,29 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func registerHotKey() {
         HotKey.shared.register(code: Settings.shared.hotKeyCode, mods: Settings.shared.hotKeyMods)
-        captureItem?.title = "Сделать снимок (\(Settings.shared.hotKeyLabel))"
+        captureItem?.title = "\(tr("menu.capture")) (\(Settings.shared.hotKeyLabel))"
     }
 
     private func setupStatusItem() {
         let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         item.button?.image = NSImage(systemSymbolName: "camera.viewfinder", accessibilityDescription: "Better Screenshot")
+        statusItem = item
+        rebuildStatusMenu()
+    }
+
+    private func rebuildStatusMenu() {
         let menu = NSMenu()
-        let cap = NSMenuItem(title: "Сделать снимок", action: #selector(startCapture), keyEquivalent: "")
+        let cap = NSMenuItem(title: tr("menu.capture"), action: #selector(startCapture), keyEquivalent: "")
         cap.target = self
         captureItem = cap
         menu.addItem(cap)
-        let set = NSMenuItem(title: "Настройки…", action: #selector(openSettings), keyEquivalent: ",")
+        let set = NSMenuItem(title: tr("menu.settings"), action: #selector(openSettings), keyEquivalent: ",")
         set.target = self
         menu.addItem(set)
         menu.addItem(.separator())
-        menu.addItem(NSMenuItem(title: "Выйти", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
-        item.menu = menu
-        statusItem = item
+        menu.addItem(NSMenuItem(title: tr("menu.quit"), action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+        statusItem?.menu = menu
+        registerHotKey()
     }
 
     /// An accessory app has no visible menu bar, but key equivalents (⌘Z, ⌘C, ⌘S) still need these items.
@@ -51,17 +58,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             top.submenu = m
             main.addItem(top)
         }
-        add("Better Screenshot", [NSMenuItem(title: "Выйти", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")])
-        add("Файл", [NSMenuItem(title: "Сохранить…", action: Selector(("saveDocument:")), keyEquivalent: "s"),
-                     NSMenuItem(title: "Закрыть", action: #selector(NSWindow.performClose(_:)), keyEquivalent: "w")])
-        let redo = NSMenuItem(title: "Вернуть", action: Selector(("redo:")), keyEquivalent: "z")
+        add("Better Screenshot", [NSMenuItem(title: tr("menu.quit"), action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")])
+        add(tr("menu.file"), [NSMenuItem(title: tr("ed.save"), action: Selector(("saveDocument:")), keyEquivalent: "s"),
+                     NSMenuItem(title: tr("menu.close"), action: #selector(NSWindow.performClose(_:)), keyEquivalent: "w")])
+        let redo = NSMenuItem(title: tr("menu.redo"), action: Selector(("redo:")), keyEquivalent: "z")
         redo.keyEquivalentModifierMask = [.command, .shift]
-        add("Правка", [NSMenuItem(title: "Отменить", action: Selector(("undo:")), keyEquivalent: "z"), redo,
+        add(tr("menu.edit"), [NSMenuItem(title: tr("menu.undo"), action: Selector(("undo:")), keyEquivalent: "z"), redo,
                        .separator(),
-                       NSMenuItem(title: "Вырезать", action: #selector(NSText.cut(_:)), keyEquivalent: "x"),
-                       NSMenuItem(title: "Копировать", action: #selector(NSText.copy(_:)), keyEquivalent: "c"),
-                       NSMenuItem(title: "Вставить", action: #selector(NSText.paste(_:)), keyEquivalent: "v"),
-                       NSMenuItem(title: "Выделить всё", action: #selector(NSText.selectAll(_:)), keyEquivalent: "a")])
+                       NSMenuItem(title: tr("menu.cut"), action: #selector(NSText.cut(_:)), keyEquivalent: "x"),
+                       NSMenuItem(title: tr("ed.copy"), action: #selector(NSText.copy(_:)), keyEquivalent: "c"),
+                       NSMenuItem(title: tr("menu.paste"), action: #selector(NSText.paste(_:)), keyEquivalent: "v"),
+                       NSMenuItem(title: tr("menu.selectall"), action: #selector(NSText.selectAll(_:)), keyEquivalent: "a")])
         NSApp.mainMenu = main
     }
 
@@ -75,8 +82,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         thumbnail.dismiss(animated: false)
         guard CGPreflightScreenCaptureAccess() else {
             CGRequestScreenCaptureAccess()
-            alert("Нужен доступ к записи экрана",
-                  "Откройте Системные настройки → Конфиденциальность и безопасность → Запись экрана, включите Better Screenshot и перезапустите приложение.")
+            alert(tr("alert.perm.title"), tr("alert.perm.text"))
             return
         }
         Task { @MainActor in
@@ -91,7 +97,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 self.session = s
                 s.start()
             } catch {
-                self.alert("Не удалось сделать снимок", error.localizedDescription)
+                self.alert(tr("alert.fail"), error.localizedDescription)
             }
         }
     }

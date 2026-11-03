@@ -45,7 +45,7 @@ final class EditorController: NSWindowController, NSWindowDelegate {
         let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: width, height: height),
                               styleMask: [.titled, .closable, .miniaturizable, .resizable],
                               backing: .buffered, defer: false)
-        window.title = "Редактор скриншота"
+        window.title = tr("ed.title")
         window.minSize = NSSize(width: 900, height: 480)
         window.isReleasedWhenClosed = false
         super.init(window: window)
@@ -108,14 +108,14 @@ final class EditorController: NSWindowController, NSWindowDelegate {
         let tools = NSStackView(views: toolButtons)
         tools.spacing = 2
 
-        configure(undoButton, symbol: "arrow.uturn.backward", tip: "Отменить (⌘Z)", action: #selector(undoClicked))
-        configure(redoButton, symbol: "arrow.uturn.forward", tip: "Вернуть (⇧⌘Z)", action: #selector(redoClicked))
-        let save = NSButton(title: "Сохранить…", target: self, action: #selector(saveClicked))
+        configure(undoButton, symbol: "arrow.uturn.backward", tip: tr("ed.undo"), action: #selector(undoClicked))
+        configure(redoButton, symbol: "arrow.uturn.forward", tip: tr("ed.redo"), action: #selector(redoClicked))
+        let save = NSButton(title: tr("ed.save"), target: self, action: #selector(saveClicked))
         save.bezelStyle = .rounded
-        let copy = NSButton(title: "Копировать", target: self, action: #selector(copyClicked))
+        let copy = NSButton(title: tr("ed.copy"), target: self, action: #selector(copyClicked))
         copy.bezelStyle = .rounded
         copy.bezelColor = .controlAccentColor
-        copy.toolTip = "Скопировать результат в буфер и закрыть (⌘C)"
+        copy.toolTip = tr("ed.copy.tip")
 
         let spacer = NSView()
         spacer.setContentHuggingPriority(.init(1), for: .horizontal)
@@ -139,13 +139,13 @@ final class EditorController: NSWindowController, NSWindowDelegate {
         wellButton.action = #selector(wellChanged(_:))
         wellButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
         wellButton.heightAnchor.constraint(equalToConstant: 22).isActive = true
-        let sizes = NSSegmentedControl(labels: ["Тонко", "Средне", "Толсто"], trackingMode: .selectOne,
+        let sizes = NSSegmentedControl(labels: [tr("size.thin"), tr("size.medium"), tr("size.thick")], trackingMode: .selectOne,
                                        target: self, action: #selector(sizeChanged(_:)))
         sizes.selectedSegment = 1
-        let smart = NSButton(checkboxWithTitle: "Выпрямлять фигуры", target: self, action: #selector(smartChanged(_:)))
+        let smart = NSButton(checkboxWithTitle: tr("ed.smart"), target: self, action: #selector(smartChanged(_:)))
         smart.state = .on
-        smart.toolTip = "Нарисованные от руки круг, прямоугольник, линия и стрелка станут ровными. ⌘Z вернёт как было."
-        let hint = NSTextField(labelWithString: "Shift — ровные углы / квадрат")
+        smart.toolTip = tr("ed.smart.tip")
+        let hint = NSTextField(labelWithString: tr("ed.shift"))
         hint.textColor = .secondaryLabelColor
         hint.font = .systemFont(ofSize: 11)
         let row2 = NSStackView(views: swatches + [wellButton, sizes, smart, hint])
