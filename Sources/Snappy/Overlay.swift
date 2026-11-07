@@ -104,6 +104,7 @@ final class OverlayView: NSView {
     private var dragStart: NSPoint?
     private var dragRect: NSRect?
     private var hover: NSRect?
+    private var toolbarBox: NSView?
 
     init(session: CaptureSession, capture: Capture) {
         self.session = session
@@ -159,12 +160,22 @@ final class OverlayView: NSView {
             stack.bottomAnchor.constraint(equalTo: box.bottomAnchor),
         ])
         addSubview(box)
+        toolbarBox = box
         box.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             box.centerXAnchor.constraint(equalTo: centerXAnchor),
             box.topAnchor.constraint(equalTo: topAnchor, constant: 70),
         ])
         session.segmented = seg
+    }
+
+    /// Fades the toolbar out while an area is being dragged, so nothing behind it is hidden.
+    private func setToolbarHidden(_ hidden: Bool) {
+        guard let box = toolbarBox, (box.alphaValue < 0.5) != hidden else { return }
+        NSAnimationContext.runAnimationGroup { ctx in
+            ctx.duration = 0.12
+            box.animator().alphaValue = hidden ? 0 : 1
+        }
     }
 
     private var micButton: NSView?
@@ -188,6 +199,7 @@ final class OverlayView: NSView {
     func modeChanged() {
         dragStart = nil
         dragRect = nil
+        setToolbarHidden(false)
         updateHover(at: NSEvent.mouseLocation)
         window?.invalidateCursorRects(for: self)
         needsDisplay = true
@@ -237,6 +249,7 @@ final class OverlayView: NSView {
     override func mouseDragged(with event: NSEvent) {
         guard session.mode == .area, let s = dragStart else { return }
         dragRect = rect(s, convert(event.locationInWindow, from: nil))
+        if let r = dragRect, r.width > 3 || r.height > 3 { setToolbarHidden(true) }
         needsDisplay = true
     }
 
@@ -248,6 +261,7 @@ final class OverlayView: NSView {
             } else {
                 dragStart = nil
                 dragRect = nil
+                setToolbarHidden(false)
                 needsDisplay = true
             }
         case .window, .screen:
