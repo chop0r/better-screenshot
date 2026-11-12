@@ -1,6 +1,6 @@
 # Better Screenshot
 
-Convenient screenshots for macOS, the way Windows does it: pick an area / window / screen, get a thumbnail in the corner and a simple editor. Free and open source.
+Convenient screenshots for macOS, the way Windows does it: pick an area / window / screen, get a thumbnail in the corner and a simple editor; also screen recording and text recognition. Free and open source.
 
 **English** | [Русский](#русская-версия)
 
@@ -20,6 +20,7 @@ Convenient screenshots for macOS, the way Windows does it: pick an area / window
 - **Shape straightening**: a hand-drawn circle, rectangle, line or arrow becomes a clean one. ⌘Z brings back exactly what you drew.
 - Hold **Shift** while drawing for straight lines (15° steps) and squares / circles.
 - **Copy** (to the clipboard, closes the editor) and **Save…** (PNG) buttons.
+- **Text recognition (OCR)**: switch the picker to **Text** (or press **T**), choose an area, window or screen, and the text in it goes to the clipboard. Works on-device (Apple Vision) with no internet; supports English, Russian, Ukrainian, German, French, Spanish, Chinese and Japanese. QR codes and bar codes are decoded too.
 - **Screen recording**: switch **Screenshot | Record** in the same picker (or press **R**), choose the area, and recording starts. A floating panel shows the timer and lets you toggle the **microphone** and **system sound** at any time; the same hotkey stops the recording. The MP4 is saved to `~/Movies/Better Screenshot/` and copied to the clipboard; click the thumbnail to preview it, reveal it in Finder or export a **GIF**.
 - **Opens images from [Better Clipboard](https://github.com/chop0r/better-clipboard)** (free clipboard history): edit any old screenshot from your history in this editor. Also available via *Open With* for PNG / JPEG / TIFF files, and from the menu: **Edit image from clipboard**.
 - **About** window in the menu with links to this repository and the author.
@@ -79,6 +80,7 @@ This project was created with the help of an AI assistant (Claude by Anthropic) 
 - **Выпрямление фигур**: нарисованные от руки круг, прямоугольник, линия и стрелка становятся ровными. ⌘Z возвращает штрих как был нарисован.
 - **Shift** при рисовании — ровные линии (шаг 15°), квадраты и круги.
 - Кнопки **«Копировать»** (в буфер, редактор закрывается) и **«Сохранить…»** (PNG).
+- **Распознавание текста (OCR)**: переключите выбор на **Текст** (или нажмите **T**), выберите область, окно или экран — и текст из него окажется в буфере. Работает на самом Mac (Apple Vision), без интернета; понимает английский, русский, украинский, немецкий, французский, испанский, китайский и японский. QR-коды и штрихкоды тоже читаются.
 - **Запись экрана**: в том же выборе переключатель **Скриншот | Запись** (или клавиша **R**), выбираете область — и запись идёт. Плавающая панель показывает таймер и позволяет в любой момент включать и выключать **микрофон** и **звук системы**; то же сочетание останавливает запись. MP4 сохраняется в `~/Movies/Better Screenshot/` и копируется в буфер; клик по миниатюре открывает просмотр, показ в Finder и экспорт в **GIF**.
 - **Открывает изображения из [Better Clipboard](https://github.com/chop0r/better-clipboard)** (бесплатная история буфера): любой старый скриншот из истории можно править в этом редакторе. Также доступно через «Открыть в программе» для файлов PNG / JPEG / TIFF и из меню: **«Править изображение из буфера»**.
 - Окно **«О программе»** в меню со ссылками на репозиторий и автора.

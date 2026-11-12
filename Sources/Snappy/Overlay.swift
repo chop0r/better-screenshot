@@ -10,7 +10,7 @@ final class OverlayWindow: NSWindow {
 }
 
 enum CapturePurpose {
-    case screenshot, record
+    case screenshot, text, record
 }
 
 final class CaptureSession {
@@ -126,9 +126,9 @@ final class OverlayView: NSView {
         let hint = NSTextField(labelWithString: tr("esc.cancel"))
         hint.textColor = .secondaryLabelColor
         hint.font = .systemFont(ofSize: 11)
-        let purposeSeg = NSSegmentedControl(labels: [tr("purpose.shot"), tr("purpose.rec")], trackingMode: .selectOne,
+        let purposeSeg = NSSegmentedControl(labels: [tr("purpose.shot"), tr("purpose.text"), tr("purpose.rec")], trackingMode: .selectOne,
                                             target: self, action: #selector(purposeClicked(_:)))
-        purposeSeg.selectedSegment = session.purpose == .record ? 1 : 0
+        purposeSeg.selectedSegment = Self.purposeIndex(session.purpose)
         purposeSeg.segmentStyle = .rounded
         session.purposeSegmented = purposeSeg
         do {
@@ -181,12 +181,20 @@ final class OverlayView: NSView {
     private var micButton: NSView?
     private var sysButton: NSView?
 
+    private static func purposeIndex(_ p: CapturePurpose) -> Int {
+        switch p {
+        case .screenshot: return 0
+        case .text: return 1
+        case .record: return 2
+        }
+    }
+
     @objc private func purposeClicked(_ sender: NSSegmentedControl) {
-        session.purpose = sender.selectedSegment == 1 ? .record : .screenshot
+        session.purpose = [.screenshot, .text, .record][max(0, min(2, sender.selectedSegment))]
     }
 
     func purposeChanged() {
-        session.purposeSegmented?.selectedSegment = session.purpose == .record ? 1 : 0
+        session.purposeSegmented?.selectedSegment = Self.purposeIndex(session.purpose)
         micButton?.isHidden = session.purpose != .record
         sysButton?.isHidden = session.purpose != .record
         needsDisplay = true
@@ -274,6 +282,7 @@ final class OverlayView: NSView {
         case 53: session.cancel()
         case 1: session.purpose = .screenshot
         case 15: session.purpose = .record
+        case 17: session.purpose = .text
         case 18: session.mode = .area
         case 19: session.mode = .window
         case 20: session.mode = .screen
@@ -292,7 +301,8 @@ final class OverlayView: NSView {
         }
         dim.fill()
         guard let r = highlight else { return }
-        (session.purpose == .record ? NSColor.systemRed : NSColor.controlAccentColor).setStroke()
+        (session.purpose == .record ? NSColor.systemRed
+            : session.purpose == .text ? NSColor.systemGreen : NSColor.controlAccentColor).setStroke()
         let border = NSBezierPath(rect: r.insetBy(dx: 0.5, dy: 0.5))
         border.lineWidth = 2
         border.stroke()

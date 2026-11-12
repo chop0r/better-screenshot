@@ -161,9 +161,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 let caps = try await CaptureService.captureAll()
                 guard !caps.isEmpty else { return }
                 let s = CaptureSession(captures: caps, windowFrames: CaptureService.visibleWindowFrames(), purpose: purpose)
-                s.onFinish = { [weak self] result in
+                s.onFinish = { [weak self, weak s] result in
+                    let wantsText = s?.purpose == .text
                     self?.session = nil
-                    if let (image, screen) = result { self?.captured(image, on: screen) }
+                    guard let (image, screen) = result else { return }
+                    if wantsText { self?.textCaptured(image, on: screen) } else { self?.captured(image, on: screen) }
                 }
                 s.onRegion = { [weak self] result in
                     self?.session = nil
@@ -272,6 +274,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         thumbnail.show(image: image, screen: screen, corner: Settings.shared.corner,
                        seconds: Settings.shared.thumbnailSeconds) { [weak self] in
             self?.openEditor(image, scale: scale)
+        }
+    }
+
+    /// Text mode: recognize the text (and QR codes) in the chosen region and put it on the clipboard.
+    private func textCaptured(_ image: CGImage, on screen: NSScreen) {
+        let scale = screen.backingScaleFactor
+        Task { @MainActor in
+            let text = await TextRecognizer.recognize(image)
+            if !text.isEmpty {
+                NSPasteboard.general.clearContents()
+                NSPasteboard.general.setString(text, forType: .string)
+            }
+            self.thumbnail.show(image: image, screen: screen, corner: Settings.shared.corner,
+                                seconds: Settings.shared.thumbnailSeconds,
+                                caption: tr(text.isEmpty ? "thumb.notext" : "thumb.text")) { [weak self] in
+                self?.openEditor(image, scale: scale)
+            }
         }
     }
 
